@@ -1,0 +1,33 @@
+#dialpad {
+	display: inline-grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: min-content;
+	grid-gap: 0.5rem;
+}
+
+#dialpad > button {
+	font-size: 1.5rem;
+	padding: 0.5rem;
+	width: 3rem;
+	height: 3rem;
+	cursor: pointer;
+}
+
+#dialpad > button:hover {
+	border-color: orange;
+}
+
+#dialpad > button.highlighted {
+	border-color: blue;
+}
+
+#results.hidden {
+	display: none;
+}
+
+#starting-key-1,
+#starting-key-2,
+#hop-count,
+#path-count {
+	font-weight: bold;
+}
