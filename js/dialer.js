@@ -7,6 +7,9 @@ export default {
 
 // ****************************
 
+// wrapping our utility (defined below) with memoization
+countPaths = memoize(countPaths);
+
 var nearbyKeys = [
 	[4,6],
 	[6,8],
@@ -66,4 +69,16 @@ function followPath(path,paths) {
 		// this path is complete, so save it
 		paths.push(path);
 	}
+}
+
+// utility for caching return results against the input
+// arguments to avoid unnecessary re-computation
+function memoize(fn) {
+	var cache = {};
+	return function memoized(start,length){
+		if (!cache[`${start}:${length}`]) {
+			cache[`${start}:${length}`] = fn(start,length);
+		}
+		return cache[`${start}:${length}`];
+	};
 }
