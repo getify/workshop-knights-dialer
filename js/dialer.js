@@ -7,53 +7,27 @@ export default {
 
 // ****************************
 
-var dialpad = [
-	[ 1, 2, 3 ],
-	[ 4, 5, 6 ],
-	[ 7, 8, 9 ],
-	[  , 0,   ]
+var nearbyKeys = [
+	[4,6],
+	[6,8],
+	[7,9],
+	[4,8],
+	[3,9,0],
+	[],
+	[1,7,0],
+	[2,6],
+	[1,3],
+	[2,4]
 ];
 
 function reachableKeys(startingDigit) {
-	var nearbyKeys = [];
-
-	for (let [ rowIdx, row ] of dialpad.entries()) {
-		let colIdx = row.indexOf(startingDigit);
-		if (colIdx != -1) {
-			// check the possible knight moves
-			for (let rowMove of [ -2, -1, 1, 2 ]) {
-				for (let colMove of [ -2, -1, 1, 2 ]) {
-					// only consult the combinations where the
-					// row/col move magnitudes are different
-					//
-					// e.g., no moves of (2,2) or (2,-2),
-					// only moves like (2,1) or (-1,2)
-					if (Math.abs(rowMove) != Math.abs(colMove)) {
-						// valid key on the dialpad?
-						if (
-							rowIdx + rowMove >= 0 &&
-							rowIdx + rowMove <= 3 &&
-							colIdx + colMove >= 0 &&
-							colIdx + colMove <= 2 &&
-							dialpad[rowIdx + rowMove][colIdx + colMove] != undefined
-						) {
-							nearbyKeys.push(
-								dialpad[rowIdx + rowMove][colIdx + colMove]
-							);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return nearbyKeys;
+	return nearbyKeys[startingDigit];
 }
 
 function countPaths(startingDigit,hopCount) {
 	if (hopCount == 0) return 1;
 	var pathCount = 0;
-	for (let digit of reachableKeys(startingDigit)) {
+	for (let digit of nearbyKeys[startingDigit]) {
 		// recursively count all the paths from the
 		// next digit, but with one fewer hops in length
 		pathCount += countPaths(digit,hopCount-1);
@@ -63,7 +37,7 @@ function countPaths(startingDigit,hopCount) {
 
 function listAcyclicPaths(startingDigit) {
 	var paths = [];
-	var nextHops = reachableKeys(startingDigit);
+	var nextHops = nearbyKeys[startingDigit];
 	for (let nextHop of nextHops) {
 		// init a new path
 		let path = [startingDigit,nextHop];
@@ -74,7 +48,7 @@ function listAcyclicPaths(startingDigit) {
 }
 
 function followPath(path,paths) {
-	var nextHops = reachableKeys(path[path.length-1]);
+	var nextHops = nearbyKeys[path[path.length-1]];
 	var pathForwardFound = false;
 	for (let nextHop of nextHops) {
 		// is this next key NOT already in the collected
