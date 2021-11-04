@@ -7,9 +7,6 @@ export default {
 
 // ****************************
 
-// wrapping our utility (defined below) with memoization
-countPaths = memoize(countPaths);
-
 var nearbyKeys = [
 	[4,6],
 	[6,8],
@@ -29,13 +26,27 @@ function reachableKeys(startingDigit) {
 
 function countPaths(startingDigit,hopCount) {
 	if (hopCount == 0) return 1;
-	var pathCount = 0;
-	for (let digit of nearbyKeys[startingDigit]) {
-		// recursively count all the paths from the
-		// next digit, but with one fewer hops in length
-		pathCount += countPaths(digit,hopCount-1);
+	// set up an array holding the cumulative counts for paths,
+	// starting with each of the 10 digits; initialized to 1 for
+	// each digit
+	var priorPathCounts = Array(10).fill(1);
+	for (let hops = 0; hops < hopCount; hops++) {
+		// counts for each digit for just the next hop
+		let pathCounts = Array(10).fill(0);
+		// process all 10 digits
+		for (let digit = 0; digit <= 9; digit++) {
+			// but only update the counts for each of those
+			// digits' nearby keys (i.e., valid moves)
+			for (let n of nearbyKeys[digit]) {
+				pathCounts[digit] += priorPathCounts[n];
+			}
+		}
+		// preserve the running counts for the next iteration (if any)
+		priorPathCounts = pathCounts;
 	}
-	return pathCount;
+	// return only the count for the requested digit (even though
+	// all counts were computed)
+	return priorPathCounts[startingDigit];
 }
 
 function listAcyclicPaths(startingDigit) {
@@ -69,16 +80,4 @@ function followPath(path,paths) {
 		// this path is complete, so save it
 		paths.push(path);
 	}
-}
-
-// utility for caching return results against the input
-// arguments to avoid unnecessary re-computation
-function memoize(fn) {
-	var cache = {};
-	return function memoized(start,length){
-		if (!cache[`${start}:${length}`]) {
-			cache[`${start}:${length}`] = fn(start,length);
-		}
-		return cache[`${start}:${length}`];
-	};
 }
