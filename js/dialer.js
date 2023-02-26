@@ -40,7 +40,7 @@ function countPaths(startingDigit,hopCount) {
 }
 
 function listAcyclicPaths(startingDigit) {
-	// TODO: given the digit/key to start from,
+	// given the digit/key to start from,
 	// return a list of the distinct acyclic
 	// paths that are possible to traverse
 	//
@@ -49,5 +49,29 @@ function listAcyclicPaths(startingDigit) {
 	//   [4, 3, 8, 1, 6, 0],
 	//   ...
 	// ]
-	return []
+	var paths = []
+	var nextHops = nearbyKeys[startingDigit]
+	for (let nextHop of nextHops) {
+		let path = [ startingDigit, nextHop ]
+		followPath(path, paths)
+	}
+
+	return paths
+}
+
+function followPath(path, paths) {
+	var nextHops = nearbyKeys[path[path.length - 1]]
+	var pathForwardFound = false
+
+	for( let nextHop of nextHops) {
+		if (!path.includes(nextHop)) {
+			pathForwardFound = true
+			let nextPath = [ ...path, nextHop]
+			followPath(nextPath, paths)
+		}
+	}
+
+	if (!pathForwardFound) {
+		paths.push(path)
+	}
 }
