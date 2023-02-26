@@ -4,6 +4,7 @@ export default {
 	listAcyclicPaths
 };
 
+countPaths = memoize(countPaths)
 
 // ****************************
 
@@ -73,5 +74,15 @@ function followPath(path, paths) {
 
 	if (!pathForwardFound) {
 		paths.push(path)
+	}
+}
+
+function memoize(fn) {
+	var cache = {}
+	return function memoized(start, length){
+		if (!cache[`${start}:${length}`]){
+			cache[`${start}:${length}`] = fn(start, length)
+		}
+		return cache[`${start}:${length}`]
 	}
 }
