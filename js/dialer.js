@@ -32,12 +32,17 @@ function countPaths(startingDigit,hopCount) {
 	// of all the possible paths that could be
 	// traversed
 	if (hopCount == 0) return 1
-	var pathCount = 0
-
-	for (let digit of nearbyKeys[startingDigit]) {
-		pathCount += countPaths(digit, hopCount - 1)
+	var priorPathCounts = Array(10).fill(1)
+	for (let hops=0; hops < hopCount; hops++) {
+		let PathCounts = Array(10).fill(0)
+		for(let digit=0; digit <=9; digit++){
+			for (let n of nearbyKeys[digit]) {
+				PathCounts[digit] += priorPathCounts[n]
+			}
+		}
+		priorPathCounts = PathCounts
 	}
-	return pathCount
+	return priorPathCounts[startingDigit]
 }
 
 function listAcyclicPaths(startingDigit) {
